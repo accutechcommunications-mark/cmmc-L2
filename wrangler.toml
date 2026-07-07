@@ -5,7 +5,7 @@ pages_build_output_dir = "public"
 [[d1_databases]]
 binding = "DB"
 database_name = "cmmc-dashboard"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "b9efd00b-8aac-4ea0-8b8b-1a43d2088220"
 
 [[r2_buckets]]
 binding = "ARTIFACTS"
