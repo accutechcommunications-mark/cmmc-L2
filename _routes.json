@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/api/*"],
+  "exclude": ["/dashboard.html", "/family.html", "/styles.css", "/app.js"]
+}

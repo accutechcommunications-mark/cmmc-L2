@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMMC Family Detail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell detail-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">C2</div>
+        <div>
+          <p class="eyebrow">Compliance Workspace</p>
+          <h1>Family Detail</h1>
+        </div>
+      </div>
+      <nav class="side-nav" aria-label="Primary">
+        <a href="./dashboard.html">Dashboard</a>
+        <a class="active" href="#">Current family</a>
+      </nav>
+    </aside>
+
+    <main id="main" class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Family workspace</p>
+          <h2 id="familyTitle">Access Control</h2>
+        </div>
+        <a class="button secondary" href="./dashboard.html">Back to dashboard</a>
+      </header>
+
+      <section class="detail-grid">
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Controls</p>
+              <h3>Detailed control status</h3>
+            </div>
+          </div>
+          <div id="controlsTable" class="table-wrap"></div>
+        </article>
+
+        <article class="panel evidence-panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Artifacts</p>
+              <h3>Upload supporting evidence</h3>
+            </div>
+          </div>
+          <form id="artifactForm" class="artifact-form">
+            <label>
+              Control
+              <select id="controlSelect" name="controlId"></select>
+            </label>
+            <label>
+              Evidence label
+              <input type="text" name="displayName" placeholder="Example: MFA policy screenshot" required />
+            </label>
+            <label>
+              File
+              <input type="file" name="file" required />
+            </label>
+            <label>
+              Notes
+              <textarea name="notes" rows="5" placeholder="Add context for reviewers"></textarea>
+            </label>
+            <button class="button primary" type="submit">Queue upload</button>
+            <p class="form-note">The scaffold posts to a placeholder upload endpoint. Wire this to R2 in production.</p>
+          </form>
+          <div id="artifactStatus" class="artifact-status" aria-live="polite"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
