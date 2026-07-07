@@ -3,81 +3,185 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CMMC Family Detail</title>
+  <title>CMMC Control Family</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./app.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="app-shell detail-shell">
+  <div class="shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">C2</div>
-        <div>
-          <p class="eyebrow">Compliance Workspace</p>
-          <h1>Family Detail</h1>
+        <div class="brand-mark">C2</div>
+        <div class="brand-copy">
+          <strong>CMMC L2</strong>
+          <span>Compliance dashboard</span>
         </div>
       </div>
-      <nav class="side-nav" aria-label="Primary">
-        <a href="./dashboard.html">Dashboard</a>
-        <a class="active" href="#">Current family</a>
+      <nav class="nav-group" aria-label="Primary">
+        <div class="nav-label">Workspace</div>
+        <a class="nav-link" href="./dashboard.html"><span class="dot"></span>Dashboard</a>
+        <a class="nav-link active" href="./family.html?family=AC"><span class="dot"></span>Control family</a>
       </nav>
+      <div class="sidebar-footer">Evidence, guidance, and status in one place.</div>
     </aside>
 
-    <main id="main" class="main-content">
+    <main class="main">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Family workspace</p>
-          <h2 id="familyTitle">Access Control</h2>
+        <div class="tenant">
+          <small>Program</small>
+          <strong>CMMC Level 2</strong>
         </div>
-        <a class="button secondary" href="./dashboard.html">Back to dashboard</a>
+        <div class="topbar-right">
+          <span class="chip">Guide-ready</span>
+          <div class="avatar">CS</div>
+        </div>
       </header>
 
-      <section class="detail-grid">
-        <article class="panel">
-          <div class="panel-header">
-            <div>
-              <p class="eyebrow">Controls</p>
-              <h3>Detailed control status</h3>
-            </div>
+      <section class="content" data-family-page>
+        <div class="page-header">
+          <div>
+            <div class="eyebrow" data-family-code>Family</div>
+            <h1 class="page-title" data-family-title>Control family</h1>
+            <p class="page-subtitle" data-family-summary>Loading family detail.</p>
           </div>
-          <div id="controlsTable" class="table-wrap"></div>
-        </article>
+          <div class="page-actions">
+            <a class="btn btn-outline" href="./dashboard.html">Back to dashboard</a>
+          </div>
+        </div>
 
-        <article class="panel evidence-panel">
-          <div class="panel-header">
-            <div>
-              <p class="eyebrow">Artifacts</p>
-              <h3>Upload supporting evidence</h3>
+        <section class="kpis" data-family-kpis>
+          <article class="kpi">
+            <label>Controls</label>
+            <strong data-kpi-controls>—</strong>
+            <span>Total controls in family</span>
+          </article>
+          <article class="kpi">
+            <label>Implemented</label>
+            <strong data-kpi-implemented>—</strong>
+            <span>Controls marked implemented</span>
+          </article>
+          <article class="kpi">
+            <label>Guide coverage</label>
+            <strong data-kpi-guides>—</strong>
+            <span>Published how-to guides</span>
+          </article>
+          <article class="kpi">
+            <label>Evidence items</label>
+            <strong data-kpi-artifacts>—</strong>
+            <span>Uploaded supporting artifacts</span>
+          </article>
+        </section>
+
+        <div class="stack" data-controls-container>
+          <article class="panel empty-state-panel">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Loading controls</h2>
+                <p class="panel-sub">The family detail page is waiting for API data.</p>
+              </div>
             </div>
-          </div>
-          <form id="artifactForm" class="artifact-form">
-            <label>
-              Control
-              <select id="controlSelect" name="controlId"></select>
-            </label>
-            <label>
-              Evidence label
-              <input type="text" name="displayName" placeholder="Example: MFA policy screenshot" required />
-            </label>
-            <label>
-              File
-              <input type="file" name="file" required />
-            </label>
-            <label>
-              Notes
-              <textarea name="notes" rows="5" placeholder="Add context for reviewers"></textarea>
-            </label>
-            <button class="button primary" type="submit">Queue upload</button>
-            <p class="form-note">The scaffold posts to a placeholder upload endpoint. Wire this to R2 in production.</p>
-          </form>
-          <div id="artifactStatus" class="artifact-status" aria-live="polite"></div>
-        </article>
+          </article>
+        </div>
       </section>
     </main>
   </div>
-  <script src="./app.js" defer></script>
+
+  <template id="control-card-template">
+    <article class="panel control-card">
+      <div class="control-topline">
+        <div>
+          <div class="control-id" data-control-id></div>
+          <h2 class="control-title" data-control-title></h2>
+        </div>
+        <div class="control-badges">
+          <span class="badge status-badge" data-control-status></span>
+          <span class="badge evidence-badge" data-control-evidence>0 artifacts</span>
+        </div>
+      </div>
+
+      <p class="control-description" data-control-description></p>
+
+      <div class="control-meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Owner</span>
+          <strong data-control-owner>Unassigned</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Last reviewed</span>
+          <strong data-control-reviewed>Not set</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Artifacts</span>
+          <strong data-control-artifact-count>0</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Guide status</span>
+          <strong data-guide-state>None</strong>
+        </div>
+      </div>
+
+      <div class="guide-layout">
+        <section class="guide-card">
+          <div class="section-heading-row">
+            <div>
+              <h3 class="section-title">How To</h3>
+              <p class="section-subtitle">Implementation guidance for this control.</p>
+            </div>
+            <span class="badge guide-status-badge" data-guide-status-badge>Not published</span>
+          </div>
+
+          <div class="guide-empty" data-guide-empty>
+            <p>No guide content has been published for this control yet.</p>
+          </div>
+
+          <div class="guide-content" data-guide-content hidden>
+            <div class="guide-header">
+              <h4 class="guide-title" data-guide-title></h4>
+              <div class="guide-version" data-guide-version></div>
+            </div>
+            <p class="guide-summary" data-guide-summary></p>
+            <div class="guide-body prose" data-guide-body></div>
+          </div>
+        </section>
+
+        <aside class="guide-utility-card">
+          <div class="section-heading-row compact">
+            <div>
+              <h3 class="section-title">Guide PDF</h3>
+              <p class="section-subtitle">Downloadable companion file.</p>
+            </div>
+          </div>
+
+          <div class="file-row" data-guide-file-empty>
+            <div>
+              <strong>No PDF linked</strong>
+              <span>Add a guide PDF when ready.</span>
+            </div>
+          </div>
+
+          <div class="file-row" data-guide-file hidden>
+            <div class="file-copy">
+              <strong data-guide-file-name>Guide PDF</strong>
+              <span data-guide-file-meta>PDF</span>
+            </div>
+            <a class="btn btn-primary btn-small" data-guide-download href="#" download>Download</a>
+          </div>
+        </aside>
+      </div>
+
+      <section class="evidence-section">
+        <div class="section-heading-row">
+          <div>
+            <h3 class="section-title">Supporting artifacts</h3>
+            <p class="section-subtitle">Evidence attached to this control.</p>
+          </div>
+        </div>
+        <div class="artifact-list" data-artifact-list></div>
+      </section>
+    </article>
+  </template>
 </body>
 </html>

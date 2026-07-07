@@ -1,161 +1,235 @@
-async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options);
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || `Request failed: ${response.status}`);
+document.addEventListener('DOMContentLoaded', () => {
+  highlightNav();
+  if (document.querySelector('[data-family-page]')) {
+    renderFamilyPage();
   }
-  return response.json();
+});
+
+function highlightNav() {
+  const current = window.location.pathname.split('/').pop() || 'dashboard.html';
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const href = link.getAttribute('href') || '';
+    if (href.includes(current)) link.classList.add('active');
+  });
 }
 
-(function initTheme() {
-  const toggle = document.querySelector('[data-theme-toggle]');
-  let current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', current);
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      current = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', current);
-    });
-  }
-})();
+async function fetchJSON(path) {
+  const res = await fetch(path, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`Failed to load ${path}`);
+  return res.json();
+}
 
-async function renderDashboard() {
-  const grid = document.getElementById('familyGrid');
-  if (!grid) return;
-
-  const familyCount = document.getElementById('familyCount');
-  const controlCount = document.getElementById('controlCount');
-  const overallCompletion = document.getElementById('overallCompletion');
-  const searchInput = document.getElementById('familySearch');
-
-  grid.innerHTML = '<p>Loading families...</p>';
+async function renderFamilyPage() {
+  const params = new URLSearchParams(window.location.search);
+  const family = params.get('family') || 'AC';
 
   try {
-    const payload = await fetchJson('/api/families');
-    const families = payload.families ?? [];
-
-    familyCount.textContent = String(families.length);
-    controlCount.textContent = String(families.reduce((sum, item) => sum + Number(item.control_count || 0), 0));
-
-    const overall = families.length
-      ? Math.round(families.reduce((sum, item) => sum + Number(item.completion_percent || 0), 0) / families.length)
-      : 0;
-    overallCompletion.textContent = `${overall}%`;
-
-    const paint = (term = '') => {
-      const filtered = families.filter(item => {
-        const haystack = `${item.code} ${item.name} ${item.status}`.toLowerCase();
-        return haystack.includes(term.toLowerCase());
-      });
-
-      if (!filtered.length) {
-        grid.innerHTML = '<p>No families match the current filter.</p>';
-        return;
-      }
-
-      grid.innerHTML = filtered.map(item => {
-        const pct = Number(item.completion_percent || 0);
-        return `
-          <article class="family-card">
-            <div>
-              <p class="eyebrow">${item.code}</p>
-              <h4>${item.name}</h4>
-            </div>
-            <span class="status-pill">${item.status}</span>
-            <div class="progress-track" aria-hidden="true">
-              <div class="progress-bar" style="width:${pct}%"></div>
-            </div>
-            <div class="family-meta">${pct}% complete · ${Number(item.control_count || 0)} controls</div>
-            <a class="button secondary" href="./family.html?family=${encodeURIComponent(item.code)}">Open family</a>
-          </article>
-        `;
-      }).join('');
-    };
-
-    paint();
-    searchInput?.addEventListener('input', event => paint(event.target.value));
+    const payload = await loadFamilyPayload(family);
+    renderFamilyHeader(payload.family);
+    renderFamilyKpis(payload);
+    renderControls(payload.controls || []);
   } catch (error) {
-    grid.innerHTML = '<p>Unable to load families from the API.</p>';
-    console.error(error);
+    renderFamilyError(error);
   }
 }
 
-async function renderFamily() {
-  const title = document.getElementById('familyTitle');
-  const tableWrap = document.getElementById('controlsTable');
-  const controlSelect = document.getElementById('controlSelect');
-  const form = document.getElementById('artifactForm');
-  const status = document.getElementById('artifactStatus');
-  if (!title || !tableWrap || !controlSelect || !form || !status) return;
-
-  const familyCode = new URLSearchParams(window.location.search).get('family') || 'AC';
-  tableWrap.innerHTML = '<p>Loading controls...</p>';
-
+async function loadFamilyPayload(familyCode) {
+  const apiPath = `/api/families/${encodeURIComponent(familyCode)}`;
   try {
-    const payload = await fetchJson(`/api/families/${encodeURIComponent(familyCode)}`);
-    const family = payload.family;
-    const controls = payload.controls ?? [];
-
-    title.textContent = `${family.name} (${family.code})`;
-
-    if (!controls.length) {
-      tableWrap.innerHTML = '<p>No controls found for this family.</p>';
-      controlSelect.innerHTML = '<option value="">No controls available</option>';
-    } else {
-      tableWrap.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Control</th>
-              <th>Title</th>
-              <th>Status</th>
-              <th>Implementation notes</th>
-              <th>Assessor notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${controls.map(control => `
-              <tr>
-                <td>${control.control_id}</td>
-                <td>${control.title}</td>
-                <td>${control.status}</td>
-                <td>${control.implementation_notes || ''}</td>
-                <td>${control.assessor_notes || ''}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-
-      controlSelect.innerHTML = controls.map(control => `
-        <option value="${control.control_id}">${control.control_id} — ${control.title}</option>
-      `).join('');
-    }
-
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      const formData = new FormData(form);
-      status.textContent = 'Submitting artifact metadata...';
-
-      try {
-        const response = await fetch('/api/artifacts/upload', {
-          method: 'POST',
-          body: formData
-        });
-
-        const payload = await response.json();
-        status.textContent = payload.message || 'Upload endpoint responded.';
-      } catch (error) {
-        status.textContent = 'Upload endpoint is not yet connected to live storage.';
-        console.error(error);
-      }
-    }, { once: true });
-  } catch (error) {
-    tableWrap.innerHTML = '<p>Unable to load family details from the API.</p>';
-    controlSelect.innerHTML = '<option value="">Unable to load controls</option>';
-    console.error(error);
+    return await fetchJSON(apiPath);
+  } catch (apiError) {
+    const fallbackPath = `./data/family-${familyCode.toLowerCase()}.json`;
+    return fetchJSON(fallbackPath);
   }
 }
 
-renderDashboard();
-renderFamily();
+function renderFamilyHeader(family) {
+  document.querySelector('[data-family-code]').textContent = family.code || 'Family';
+  document.querySelector('[data-family-title]').textContent = family.name || 'Control family';
+  document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
+}
+
+function renderFamilyKpis(payload) {
+  const controls = payload.controls || [];
+  const implemented = controls.filter(control => normalizeStatus(control.status) === 'implemented').length;
+  const guideCount = controls.filter(control => control.guide && control.guide.status === 'published').length;
+  const artifactCount = controls.reduce((count, control) => count + ((control.artifacts || []).length), 0);
+
+  document.querySelector('[data-kpi-controls]').textContent = String(controls.length);
+  document.querySelector('[data-kpi-implemented]').textContent = String(implemented);
+  document.querySelector('[data-kpi-guides]').textContent = String(guideCount);
+  document.querySelector('[data-kpi-artifacts]').textContent = String(artifactCount);
+}
+
+function renderControls(controls) {
+  const container = document.querySelector('[data-controls-container]');
+  const template = document.getElementById('control-card-template');
+  container.innerHTML = '';
+
+  if (!controls.length) {
+    container.innerHTML = `
+      <article class="panel empty-state-panel">
+        <div>
+          <h2 class="panel-title">No controls found</h2>
+          <p class="panel-sub">The selected family does not currently include control detail data.</p>
+        </div>
+      </article>`;
+    return;
+  }
+
+  controls.forEach(control => {
+    const node = template.content.cloneNode(true);
+    populateControlCard(node, control);
+    container.appendChild(node);
+  });
+}
+
+function populateControlCard(fragment, control) {
+  setText(fragment, '[data-control-id]', control.id || 'Control');
+  setText(fragment, '[data-control-title]', control.title || 'Untitled control');
+  setText(fragment, '[data-control-description]', control.description || 'No control description available.');
+  setText(fragment, '[data-control-owner]', control.owner || 'Unassigned');
+  setText(fragment, '[data-control-reviewed]', formatDate(control.lastReviewed));
+  setText(fragment, '[data-control-artifact-count]', String((control.artifacts || []).length));
+
+  const statusEl = fragment.querySelector('[data-control-status]');
+  const statusKey = normalizeStatus(control.status);
+  statusEl.textContent = labelizeStatus(control.status || 'not_started');
+  statusEl.classList.add(`status-${statusKey}`);
+
+  const evidenceEl = fragment.querySelector('[data-control-evidence]');
+  evidenceEl.textContent = `${(control.artifacts || []).length} artifact${(control.artifacts || []).length === 1 ? '' : 's'}`;
+
+  applyGuide(fragment, control.guide || null);
+  renderArtifacts(fragment.querySelector('[data-artifact-list]'), control.artifacts || []);
+}
+
+function applyGuide(fragment, guide) {
+  const guideState = fragment.querySelector('[data-guide-state]');
+  const statusBadge = fragment.querySelector('[data-guide-status-badge]');
+  const empty = fragment.querySelector('[data-guide-empty]');
+  const content = fragment.querySelector('[data-guide-content]');
+  const fileEmpty = fragment.querySelector('[data-guide-file-empty]');
+  const fileRow = fragment.querySelector('[data-guide-file]');
+
+  if (!guide) {
+    guideState.textContent = 'None';
+    statusBadge.textContent = 'Not published';
+    statusBadge.classList.add('guide-none');
+    return;
+  }
+
+  const guideStatus = guide.status || 'draft';
+  const guideClass = `guide-${normalizeStatus(guideStatus)}`;
+  guideState.textContent = labelizeStatus(guideStatus);
+  statusBadge.textContent = labelizeStatus(guideStatus);
+  statusBadge.classList.add(guideClass);
+
+  setText(fragment, '[data-guide-title]', guide.title || 'Untitled guide');
+  setText(fragment, '[data-guide-summary]', guide.summary || '');
+  setText(fragment, '[data-guide-version]', `Version ${guide.version || 1}`);
+
+  const body = fragment.querySelector('[data-guide-body]');
+  body.innerHTML = renderRichText(guide.howToMarkdown || guide.how_to_markdown || guide.body || '');
+
+  empty.hidden = false;
+  content.hidden = true;
+  if ((guide.howToMarkdown || guide.how_to_markdown || guide.body || '').trim()) {
+    empty.hidden = true;
+    content.hidden = false;
+  }
+
+  const pdf = guide.pdf || guide.pdfArtifact || null;
+  if (pdf && (pdf.url || pdf.downloadUrl || pdf.storageKey || pdf.fileName)) {
+    fileEmpty.hidden = true;
+    fileRow.hidden = false;
+    setText(fragment, '[data-guide-file-name]', pdf.displayName || pdf.fileName || 'Guide PDF');
+    setText(fragment, '[data-guide-file-meta]', [pdf.mimeType || 'PDF', pdf.updatedAt ? formatDate(pdf.updatedAt) : ''].filter(Boolean).join(' · '));
+    const link = fragment.querySelector('[data-guide-download]');
+    link.href = pdf.downloadUrl || pdf.url || `/api/artifacts/${encodeURIComponent(pdf.id || '')}/download`;
+  }
+}
+
+function renderArtifacts(container, artifacts) {
+  if (!artifacts.length) {
+    container.innerHTML = '<div class="artifact-empty">No supporting artifacts have been uploaded for this control yet.</div>';
+    return;
+  }
+
+  container.innerHTML = artifacts.map(item => {
+    const fileUrl = item.downloadUrl || item.url || '#';
+    const meta = [item.type || item.artifactRole || 'Artifact', item.updatedAt ? formatDate(item.updatedAt) : '', item.owner || ''].filter(Boolean).join(' · ');
+    return `
+      <div class="artifact-item">
+        <div class="artifact-copy">
+          <strong>${escapeHtml(item.displayName || item.fileName || 'Unnamed artifact')}</strong>
+          <span>${escapeHtml(meta)}</span>
+        </div>
+        <a class="btn btn-outline btn-small" href="${escapeAttribute(fileUrl)}" ${fileUrl === '#' ? '' : 'target="_blank" rel="noopener noreferrer"'}>Open</a>
+      </div>`;
+  }).join('');
+}
+
+function renderFamilyError(error) {
+  const container = document.querySelector('[data-controls-container]');
+  container.innerHTML = `
+    <article class="panel empty-state-panel">
+      <div>
+        <h2 class="panel-title">Unable to load family data</h2>
+        <p class="panel-sub">${escapeHtml(error.message || 'Unknown error')}</p>
+      </div>
+    </article>`;
+}
+
+function renderRichText(markdown) {
+  if (!markdown) return '';
+  const escaped = escapeHtml(markdown);
+  return escaped
+    .replace(/```([\s\S]*?)```/g, (_, code) => `<pre><code>${code.trim()}</code></pre>`)
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+    .replace(/^\- (.*)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .split(/\n\n+/)
+    .map(block => {
+      if (/^<h\d|^<pre|^<ul>/.test(block)) return block;
+      return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+    })
+    .join('');
+}
+
+function normalizeStatus(status) {
+  return String(status || '').trim().toLowerCase().replace(/\s+/g, '_');
+}
+
+function labelizeStatus(status) {
+  return String(status || '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, char => char.toUpperCase()) || 'Unknown';
+}
+
+function formatDate(value) {
+  if (!value) return 'Not set';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+}
+
+function setText(root, selector, value) {
+  const el = root.querySelector(selector);
+  if (el) el.textContent = value;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value);
+}
