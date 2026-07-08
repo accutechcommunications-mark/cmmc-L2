@@ -239,6 +239,13 @@ button { border: none; background: none; cursor: pointer; }
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3);
 }
+
+.family-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
 .meta-item {
   padding: var(--space-3);
   border: 1px solid var(--color-divider);
