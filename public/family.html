@@ -7,8 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css" />
-  <script defer src="/app.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./app.js?v1"></script>
+
 </head>
 <body>
   <div class="shell">
@@ -20,13 +21,11 @@
           <span>Compliance dashboard</span>
         </div>
       </div>
-
       <nav class="nav-group" aria-label="Primary">
         <div class="nav-label">Workspace</div>
-        <a class="nav-link" href="/dashboard.html"><span class="dot"></span>Dashboard</a>
-        <a class="nav-link active" href="/family.html?family=AC"><span class="dot"></span>Control family</a>
+        <a class="nav-link" href="./dashboard.html"><span class="dot"></span>Dashboard</a>
+        <a class="nav-link active" href="./family.html?family=AC"><span class="dot"></span>Control family</a>
       </nav>
-
       <div class="sidebar-footer">Evidence, guidance, and status in one place.</div>
     </aside>
 
@@ -50,7 +49,7 @@
             <p class="page-subtitle" data-family-summary>Loading family detail.</p>
           </div>
           <div class="page-actions">
-            <a class="btn btn-outline" href="/dashboard.html">Back to dashboard</a>
+            <a class="btn btn-outline" href="./dashboard.html">Back to dashboard</a>
           </div>
         </div>
 
@@ -185,10 +184,5 @@
       </section>
     </article>
   </template>
-
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
-    integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="
-    data-cf-beacon='{"version":"2024.11.0","token":"eb0cc7390de348b698eaa5db5f741992","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
-    crossorigin="anonymous"></script>
 </body>
 </html>
