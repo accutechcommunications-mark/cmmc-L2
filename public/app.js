@@ -13,8 +13,10 @@ function renderDashboard() {
   if (!grid) return;
 
   fetchJSON('/api/families')
-    .then(families => {
+    .then(payload => {
+      const families = Array.isArray(payload.families) ? payload.families : [];
       grid.innerHTML = '';
+
       families.forEach(family => {
         const card = document.createElement('button');
         card.type = 'button';
@@ -27,12 +29,16 @@ function renderDashboard() {
           <div class="family-card-title">${family.name}</div>
           <div class="family-card-meta">
             <span class="family-card-code">${family.code}</span>
-            <span class="family-card-controls">${family.controls} controls</span>
+            <span class="family-card-controls">${family.control_count} controls</span>
           </div>
         `;
 
         grid.appendChild(card);
       });
+
+      if (!families.length) {
+        grid.innerHTML = '<p>No control families found.</p>';
+      }
     })
     .catch(error => {
       grid.innerHTML = '<p>Unable to load family list.</p>';
@@ -270,3 +276,13 @@ function escapeHtml(value) {
 function escapeAttribute(value) {
   return escapeHtml(value);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  highlightNav();
+  if (document.querySelector('[data-family-page]')) {
+    renderFamilyPage();
+  }
+  if (document.querySelector('[data-dashboard-page]')) {
+    renderDashboard();
+  }
+});
