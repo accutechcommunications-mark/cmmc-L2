@@ -82,13 +82,17 @@ async function fetchJSON(path) {
 
 async function renderFamilyPage() {
   const params = new URLSearchParams(window.location.search);
-  const family = params.get('family') || 'AC';
+  const familyCode = params.get('family') || 'AC';
 
   try {
-    const payload = await loadFamilyPayload(family);
+    const payload = await loadFamilyPayload(familyCode);
+    familyPageState.family = payload.family;
+    familyPageState.controls = payload.controls || [];
+
     renderFamilyHeader(payload.family);
     renderFamilyKpis(payload);
-    renderControls(payload.controls || []);
+    renderControls(payload.controls);
+    setupFamilyEditPanel(payload);
   } catch (error) {
     renderFamilyError(error);
   }
@@ -110,17 +114,105 @@ function renderFamilyHeader(family) {
   document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
 }
 
+
+function setupFamilyEditPanel(payload) {
+  const toggle = document.getElementById('editFamilyToggle');
+  const panel = document.getElementById('familyEditPanel');
+  const cancel = document.getElementById('cancelFamilyEdit');
+  const form = document.getElementById('familyEditForm');
+  const controlSelect = document.getElementById('editControlSelect');
+  const statusSelect = document.getElementById('editStatusSelect');
+  const notes = document.getElementById('editImplementationNotes');
+
+  if (!toggle || !panel || !cancel || !form || !controlSelect) return;
+
+  controlSelect.innerHTML = `
+    <option value="">Choose a control</option>
+    ${payload.controls.map(control => `
+      <option value="${escapeAttribute(control.id)}">
+        ${escapeHtml(control.id)} — ${escapeHtml(control.title || 'Untitled control')}
+      </option>
+    `).join('')}
+  `;
+
+  toggle.addEventListener('click', () => {
+    const open = !panel.hasAttribute('hidden');
+    if (open) {
+      panel.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+    } else {
+      panel.removeAttribute('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  cancel.addEventListener('click', () => {
+    form.reset();
+    panel.setAttribute('hidden', '');
+    toggle.setAttribute('aria-expanded', 'false');
+  });
+
+  controlSelect.addEventListener('change', () => {
+    const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
+    if (!selected) return;
+
+    statusSelect.value = normalizeStatus(selected.status || 'not_started');
+    notes.value = selected.implementation_notes || '';
+  });
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const formData = new FormData(form);
+
+    console.log({
+      controlId: formData.get('controlId'),
+      status: formData.get('status'),
+      guideFile: formData.get('guideFile'),
+      evidenceCount: document.getElementById('editEvidenceFile')?.files.length || 0,
+      implementationNotes: formData.get('implementationNotes')
+    });
+  });
+}
+
+
+
+
 function renderFamilyKpis(payload) {
-  const controls = payload.controls || [];
+  const controls = Array.isArray(payload.controls) ? payload.controls : [];
   const implemented = controls.filter(control => normalizeStatus(control.status) === 'implemented').length;
-  const guideCount = controls.filter(control => control.guide && control.guide.status === 'published').length;
-  const artifactCount = controls.reduce((count, control) => count + ((control.artifacts || []).length), 0);
+
+  const hasGuide = controls.some(control => control.guide);
+  const hasEvidence = controls.some(control => Array.isArray(control.artifacts) && control.artifacts.length > 0);
+
+  const completion = Number(payload.family?.completion_percent) || 0;
+  const familyStatus = getStatusFromPercent(completion);
 
   document.querySelector('[data-kpi-controls]').textContent = String(controls.length);
   document.querySelector('[data-kpi-implemented]').textContent = String(implemented);
-  document.querySelector('[data-kpi-guides]').textContent = String(guideCount);
-  document.querySelector('[data-kpi-artifacts]').textContent = String(artifactCount);
+  document.querySelector('[data-kpi-guides]').textContent = hasGuide ? 'Yes' : 'No';
+  document.querySelector('[data-kpi-artifacts]').textContent = hasEvidence ? 'Yes' : 'No';
+
+  document.querySelector('[data-kpi-guides-card]')?.setAttribute('data-presence', hasGuide ? 'yes' : 'no');
+  document.querySelector('[data-kpi-evidence-card]')?.setAttribute('data-presence', hasEvidence ? 'yes' : 'no');
+
+  const familyStatusCard = document.getElementById('familyStatusCard');
+  const familyStatusLabel = document.getElementById('familyStatusLabel');
+
+  if (familyStatusCard) {
+    familyStatusCard.dataset.status = familyStatus;
+  }
+
+  if (familyStatusLabel) {
+    familyStatusLabel.textContent = `${completion}% complete`;
+  }
 }
+
+
+
+
+
+
+
 
 function renderControls(controls) {
   const container = document.querySelector('[data-controls-container]');

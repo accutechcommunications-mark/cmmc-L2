@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=19" />
-  <script defer src="./app.js?v3"></script>
+  <link rel="stylesheet" href="styles.css?v=20" />
+  <script defer src="./app.js?v4"></script>
 
 </head>
 <body>
@@ -50,8 +50,77 @@
           </div>
           <div class="page-actions">
             <a class="btn btn-outline" href="./dashboard.html">Back to dashboard</a>
+              <button
+                class="btn btn-outline"
+                type="button"
+                id="editFamilyToggle"
+                aria-expanded="false"
+                aria-controls="familyEditPanel">Edit this Control Family
+              </button>
           </div>
         </div>
+        
+<section
+  id="familyEditPanel"
+  class="panel family-edit-panel"
+  hidden
+  aria-labelledby="familyEditTitle">
+  <div class="panel-head">
+    <div>
+      <div class="eyebrow">Edit mode</div>
+      <h3 class="panel-title" id="familyEditTitle">Update control status and evidence</h3>
+    </div>
+  </div>
+
+  <form id="familyEditForm" class="family-edit-form">
+    <label class="form-field">
+      <span class="form-label">Select control</span>
+      <select id="editControlSelect" name="controlId" required>
+        <option value="">Choose a control</option>
+      </select>
+    </label>
+
+    <label class="form-field">
+      <span class="form-label">Status</span>
+      <select id="editStatusSelect" name="status" required>
+        <option value="">Choose a status</option>
+        <option value="not_started">Not Started</option>
+        <option value="in_progress">In Progress</option>
+        <option value="implemented">Implemented</option>
+        <option value="blocked">Blocked</option>
+      </select>
+    </label>
+
+    <label class="form-field">
+      <span class="form-label">Upload guide</span>
+      <input id="editGuideFile" name="guideFile" type="file" accept=".pdf,.doc,.docx,.md,.txt" />
+    </label>
+
+    <label class="form-field">
+      <span class="form-label">Upload evidence</span>
+      <input id="editEvidenceFile" name="evidenceFile" type="file" multiple />
+    </label>
+
+    <label class="form-field form-field-wide">
+      <span class="form-label">Implementation notes</span>
+      <textarea id="editImplementationNotes" name="implementationNotes" rows="4"></textarea>
+    </label>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Save changes</button>
+      <button class="btn btn-outline" type="button" id="cancelFamilyEdit">Cancel</button>
+    </div>
+  </form>
+</section>
+
+
+
+
+
+
+
+
+
 
         <section class="kpis" data-family-kpis>
           <article class="kpi">
@@ -73,6 +142,11 @@
             <label>Evidence items</label>
             <strong data-kpi-artifacts>—</strong>
             <span>Uploaded supporting artifacts</span>
+          </article>
+          <article class="metric-card metric-card-status" id="familyStatusCard" data-status="red">
+            <span class="metric-label">Family status</span>
+            <strong id="familyStatusLabel">Needs attention</strong>
+            <span class="metric-note">Based on completion percentage</span>
           </article>
         </section>
 
