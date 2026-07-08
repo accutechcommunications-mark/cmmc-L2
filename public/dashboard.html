@@ -7,11 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="app-shell">
+  <div class="shell">
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">C2</div>
@@ -20,9 +20,9 @@
           <h1>CMMC Level 2</h1>
         </div>
       </div>
-      <nav class="side-nav" aria-label="Primary">
-        <a class="active" href="./dashboard.html">Dashboard</a>
-        <a href="./family.html?family=AC">Family detail</a>
+      <nav class="nav-group" aria-label="Primary">
+        <a class="nav-link active" href="/dashboard.html"><span class="dot"></span>Dashboard</a>
+        <a class="nav-link" href="/family.html?family=AC"><span class="dot"></span>Family detail</a>
       </nav>
       <div class="sidebar-card">
         <p class="eyebrow">Environment</p>
@@ -30,7 +30,7 @@
       </div>
     </aside>
 
-    <main id="main" class="main-content">
+    <main id="main" class="main" data-dashboard-page>
       <header class="topbar">
         <div>
           <p class="eyebrow">Overview</p>
@@ -39,34 +39,34 @@
         <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme">◐</button>
       </header>
 
-      <section class="hero-grid" aria-label="Summary metrics">
-        <article class="metric-card">
+      <section class="kpis" aria-label="Summary metrics">
+        <article class="kpi">
           <span class="metric-label">Families</span>
-          <strong id="familyCount">14</strong>
-          <span class="metric-note">CMMC Level 2 control families</span>
+   	  <strong id="familyCount">14</strong>
+   	  <span>CMMC Level 2 control families</span>
         </article>
-        <article class="metric-card">
+        <article class="kpi">
           <span class="metric-label">Controls</span>
           <strong id="controlCount">110</strong>
-          <span class="metric-note">Seeded baseline controls</span>
+          <span>Seeded baseline controls</span>
         </article>
-        <article class="metric-card">
+        <article class="kpi">
           <span class="metric-label">Overall completion</span>
           <strong id="overallCompletion">0%</strong>
-          <span class="metric-note">Weighted by control status</span>
+          <span>Weighted by control status</span>
         </article>
       </section>
 
       <section class="panel">
-        <div class="panel-header">
-          <div>
-            <p class="eyebrow">Dashboard</p>
-            <h3>Family status board</h3>
-          </div>
-          <div class="panel-actions">
-            <input id="familySearch" type="search" placeholder="Filter families" aria-label="Filter families" />
-          </div>
-        </div>
+        <div class="panel-head">
+         <div>
+    <div class="eyebrow">Dashboard</div>
+         <h3 class="panel-title">Family status board</h3>
+    </div>
+    <div class="panel-actions">
+         <input id="familySearch" type="search" placeholder="Filter families" aria-label="Filter families" />
+    </div>
+    </div>
         <div id="familyGrid" class="family-grid" aria-live="polite"></div>
       </section>
     </main>
