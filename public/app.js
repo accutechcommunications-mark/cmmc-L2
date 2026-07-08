@@ -1,3 +1,13 @@
+document.addEventListener('DOMContentLoaded', () => {
+  highlightNav();
+  if (document.querySelector('[data-family-page]')) {
+    renderFamilyPage();
+  }
+  if (document.querySelector('[data-dashboard-page]')) {
+    renderDashboard();
+  }
+});
+
 function renderDashboard() {
   const grid = document.getElementById('familyGrid');
   if (!grid) return;
@@ -30,15 +40,7 @@ function renderDashboard() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  highlightNav();
-  if (document.querySelector('[data-family-page]')) {
-    renderFamilyPage();
-  }
-  if (document.querySelector('[data-dashboard-page]')) {
-    renderDashboard();
-  }
-});
+
 
 function highlightNav() {
   const current = window.location.pathname.split('/').pop() || 'dashboard.html';
