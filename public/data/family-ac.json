@@ -1,0 +1,48 @@
+{
+  "family": {
+    "code": "AC",
+    "name": "Access Control",
+    "summary": "Controls related to logical and physical access to systems and data."
+  },
+  "controls": [
+    {
+      "id": "AC.L1-3.1.1",
+      "title": "Authorized users only",
+      "description": "Limit information system access to authorized users, processes acting on behalf of authorized users, or devices.",
+      "status": "implemented",
+      "owner": "Security Operations",
+      "lastReviewed": "2026-06-15",
+      "due": "2026-12-31",
+      "guide": {
+        "status": "published",
+        "body": "Document and enforce an access control policy. Configure accounts with least privilege, review access logs regularly, and remove stale accounts promptly."
+      },
+      "artifacts": [
+        {
+          "name": "Access control policy",
+          "type": "document",
+          "location": "SharePoint /Policies/AccessControlPolicy.pdf"
+        },
+        {
+          "name": "Quarterly access review",
+          "type": "report",
+          "location": "GRC system /Evidence/AC-Reviews/Q2-2026"
+        }
+      ]
+    },
+    {
+      "id": "AC.L2-3.1.2",
+      "title": "Access enforcement",
+      "description": "Ensure access enforcement mechanisms are in place for all systems.",
+      "status": "planned",
+      "owner": "IT Operations",
+      "lastReviewed": "2026-05-10",
+      "due": "2026-09-30",
+      "guide": {
+        "status": "draft",
+        "body": "Identify all systems in scope and confirm that role-based access control (RBAC) is configured consistently. Document enforcement points and monitoring."
+      },
+      "artifacts": []
+    }
+  ]
+}
