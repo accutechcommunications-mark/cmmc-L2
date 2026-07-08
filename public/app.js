@@ -20,14 +20,14 @@ function renderDashboard() {
       families.forEach(family => {
         const card = document.createElement('button');
         card.type = 'button';
-        card.className = 'family-card';
+        card.className = 'control-card';
         card.addEventListener('click', () => {
           window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;
         });
 
         card.innerHTML = `
-          <div class="family-card-title">${family.name}</div>
-          <div class="family-card-meta">
+          <div class="control-id">${family.name}</div>
+          <div class="control-title">
             <span class="family-card-code">${family.code}</span>
             <span class="family-card-controls">${family.control_count} controls</span>
           </div>
