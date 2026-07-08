@@ -47,7 +47,8 @@
 html { -webkit-text-size-adjust: none; text-size-adjust: none; }
 body {
   min-height: 100vh;
-  background: var(--color-bg);
+  background: var(--color-bg);  
+ 
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: var(--text-base);
