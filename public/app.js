@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
   }
 });
+function getStatusFromPercent(percent) {
+  const value = Number(percent) || 0;
+
+  if (value >= 81) return 'green';
+  if (value >= 71) return 'yellow';
+  if (value >= 51) return 'orange';
+  return 'red';
+}
 
 function renderDashboard() {
   const grid = document.getElementById('familyGrid');
@@ -21,6 +29,9 @@ function renderDashboard() {
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'control-card';
+
+        card.dataset.status = getStatusFromPercent(family.percent_complete);
+
         card.addEventListener('click', () => {
           window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;
         });
@@ -47,6 +58,11 @@ function renderDashboard() {
 }
 
 
+
+function applyMetricStatus(cardEl, percent) {
+  if (!cardEl) return;
+  cardEl.dataset.status = getMetricStatus(percent);
+}
 
 function highlightNav() {
   const current = window.location.pathname.split('/').pop() || 'dashboard.html';
