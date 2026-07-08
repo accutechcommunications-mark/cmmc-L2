@@ -241,7 +241,11 @@ button {
 }
 
 .control-id {
- font-size: var(--text-lg); line-height: 1.25; }
+ font-size: var(--text-lg); line-height: 1.25; 
+ white-space: normal;
+ overflow-wrap: break-word;
+ word-break: normal;
+}
 
 .control-description { color: var(--color-text-muted); max-width: 85ch; }
 
