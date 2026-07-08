@@ -1,3 +1,35 @@
+function renderDashboard() {
+  const grid = document.getElementById('familyGrid');
+  if (!grid) return;
+
+  fetchJSON('/api/families')
+    .then(families => {
+      grid.innerHTML = '';
+      families.forEach(family => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'family-card';
+        card.addEventListener('click', () => {
+          window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;
+        });
+
+        card.innerHTML = `
+          <div class="family-card-title">${family.name}</div>
+          <div class="family-card-meta">
+            <span class="family-card-code">${family.code}</span>
+            <span class="family-card-controls">${family.controls} controls</span>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    })
+    .catch(error => {
+      grid.innerHTML = '<p>Unable to load family list.</p>';
+      console.error('Failed to render dashboard', error);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   highlightNav();
   if (document.querySelector('[data-family-page]')) {
