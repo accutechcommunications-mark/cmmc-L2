@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.querySelector('[data-family-page]')) {
     renderFamilyPage();
   }
+   if (document.querySelector('[data-dashboard-page]')) {
+    renderDashboard();
 });
 
 function highlightNav() {
@@ -12,7 +14,37 @@ function highlightNav() {
     if (href.includes(current)) link.classList.add('active');
   });
 }
+async function renderDashboard() {
+  const grid = document.getElementById('familyGrid');
+  if (!grid) return;
 
+  try {
+    const families = await fetchJSON('/api/families');
+
+    grid.innerHTML = '';
+    families.forEach(family => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'family-card';
+      card.addEventListener('click', () => {
+        window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;
+      });
+
+      card.innerHTML = `
+        <div class="family-card-title">${family.name}</div>
+        <div class="family-card-meta">
+          <span class="family-card-code">${family.code}</span>
+          <span class="family-card-controls">${family.controls} controls</span>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+  } catch (error) {
+    grid.innerHTML = '<p>Unable to load family list.</p>';
+    console.error('Failed to render dashboard', error);
+  }
+}
 async function fetchJSON(path) {
   const res = await fetch(path, { headers: { Accept: 'application/json' } });
   if (!res.ok) throw new Error(`Failed to load ${path}`);
