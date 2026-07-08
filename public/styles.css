@@ -163,7 +163,7 @@ button {
 .empty-state-panel { min-height: 160px; display: grid; place-items: center; }
 
 .control-card {
-  display: grid;
+ /* display: grid; */
   gap: var(--space-4);
   padding: var(--space-4);
   background-color: var(--color-surface);
