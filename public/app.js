@@ -25,12 +25,14 @@ function renderDashboard() {
       const families = Array.isArray(payload.families) ? payload.families : [];
       grid.innerHTML = '';
 
+console.log(families[0]);
+
       families.forEach(family => {
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'control-card';
 
-        card.dataset.status = getStatusFromPercent(family.percent_complete);
+        card.dataset.status = getStatusFromPercent(family.completion_percent);
 
         card.addEventListener('click', () => {
           window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;

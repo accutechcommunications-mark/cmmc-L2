@@ -68,22 +68,6 @@
   background-color: var(--metric-indicator, var(--color-border));
 }
 
-.metric-card[data-status="green"] {
-  --metric-indicator: var(--color-success);
-}
-
-.metric-card[data-status="yellow"] {
-  --metric-indicator: var(--color-yellow);
-}
-
-.metric-card[data-status="orange"] {
-  --metric-indicator: var(--color-orange);
-}
-
-.metric-card[data-status="red"] {
-  --metric-indicator: var(--color-error);
-}
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: none; text-size-adjust: none; }
 body {
@@ -210,11 +194,12 @@ button {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
+.control-card[data-status="green"] {--metric-indicator: var(--color-success);}
+.control-card[data-status="yellow"] {--metric-indicator: var(--color-yellow);}
+.control-card[data-status="orange"] {--metric-indicator: var(--color-orange);}
+.control-card[data-status="red"] {--metric-indicator: var(--color-error);}
 
-.control-card:hover {
-  box-shadow: var(--shadow-md);
-  background-color: var(--color-surface-2);
-}
+.control-card:hover {box-shadow: var(--shadow-md); background-color: var(--color-surface-2);}
 
 .control-topline {
   align-items: flex-start;
@@ -243,6 +228,8 @@ button {
 .control-description { color: var(--color-text-muted); max-width: 85ch; }
 
 .control-badges { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; }
+
+
 
 .badge {
   display: inline-flex;
