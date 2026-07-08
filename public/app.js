@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
   }
 });
+
+let familyPageState = {
+  family: null,
+  controls: []
+};
+
 function getStatusFromPercent(percent) {
   const value = Number(percent) || 0;
 
