@@ -210,10 +210,10 @@ button {
   background-color: var(--status-indicator, #999);
 }
 
-.control-card[data-status="green"] {--metric-indicator: var(--color-success);}
-.control-card[data-status="yellow"] {--metric-indicator: var(--color-yellow);}
-.control-card[data-status="orange"] {--metric-indicator: var(--color-orange);}
-.control-card[data-status="red"] {--metric-indicator: var(--color-error);}
+.control-card[data-status="green"] {--status-indicator: var(--color-success);}
+.control-card[data-status="yellow"] {--status-indicator: var(--color-yellow);}
+.control-card[data-status="orange"] {--status-indicator: var(--color-orange);}
+.control-card[data-status="red"] {--status-indicator: var(--color-error);}
 
 .control-card:hover {box-shadow: var(--shadow-md); background-color: var(--color-surface-2);}
 
