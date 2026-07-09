@@ -160,7 +160,7 @@ function setupFamilyEditPanel(payload) {
       </option>
     `).join('')}
   `;
-
+/*
   toggle.addEventListener('click', (event) => {
     console.log('setupFamilyEditPanel: click fired', event.currentTarget);
     console.log('before click, hidden?', panel.hasAttribute('hidden'), panel);
@@ -180,6 +180,13 @@ function setupFamilyEditPanel(payload) {
     console.log('computed opacity:', getComputedStyle(panel).opacity);
 
   });
+*/
+
+toggle.addEventListener('click', (event) => {
+  console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+  panel.removeAttribute('hidden');
+  toggle.setAttribute('aria-expanded', 'true');
+});
 
   console.log('setupFamilyEditPanel: listener attached');
 }
