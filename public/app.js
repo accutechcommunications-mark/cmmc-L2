@@ -160,6 +160,9 @@ function setupFamilyEditPanel(payload) {
       </option>
     `).join('')}
   `;
+
+  const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
+  const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
 /*
   toggle.addEventListener('click', (event) => {
     console.log('setupFamilyEditPanel: click fired', event.currentTarget);
@@ -197,11 +200,20 @@ toggle.addEventListener('click', (event) => {
     panel.setAttribute('hidden', '');
     toggle.setAttribute('aria-expanded', 'false');
   });
-*/
+
 cancel.addEventListener('click', () => {
   panel.setAttribute('hidden', '');
   toggle.setAttribute('aria-expanded', 'false');
 });
+*/
+
+cancel.addEventListener('click', (event) => {
+  event.preventDefault();
+  const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
+  window.location.href = `family.html?family=${encodeURIComponent(familyCode)}`;
+});
+
+
 
 
   controlSelect.addEventListener('change', () => {
@@ -211,12 +223,47 @@ cancel.addEventListener('click', () => {
     statusSelect.value = normalizeStatus(selected.status || 'not_started');
     notes.value = selected.implementation_notes || '';
   });
-
+/*
   form.addEventListener('submit', event => {
     event.preventDefault();
     const formData = new FormData(form);
+*/
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-    console.log({
+  const controlId = controlSelect.value;
+  const newStatus = statusSelect.value;
+  const newNotes = notes.value;
+
+  if (!controlId) return;
+
+  // 1. Update in-memory controls
+  const control = familyPageState.controls.find(c => String(c.id) === controlId);
+  if (!control) return;
+
+  control.status = newStatus;
+  control.implementationNotes = newNotes;
+
+  // 2. Re-render KPIs and controls so the dashboard reflects the change
+  renderFamilyKpis({
+    family: familyPageState.family,
+    controls: familyPageState.controls
+  });
+
+  renderControls(familyPageState.controls);
+
+  // 3. Optionally persist to API / JSON
+  // await saveFamilyUpdate(familyPageState.family.code, familyPageState.controls);
+
+  // 4. Hide the panel again
+  panel.setAttribute('hidden', '');
+  toggle.setAttribute('aria-expanded', 'false');
+});  
+
+
+
+
+console.log({
       controlId: formData.get('controlId'),
       status: formData.get('status'),
       guideFile: formData.get('guideFile'),
