@@ -96,6 +96,7 @@ async function renderFamilyPage() {
     familyPageState.controls = payload.controls || [];
 
     renderFamilyHeader(payload.family);
+    setupFamilyEditPanel(payload)
     renderFamilyKpis(payload);
     renderControls(payload.controls);
     setupFamilyEditPanel(payload);
