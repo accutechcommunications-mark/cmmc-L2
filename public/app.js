@@ -124,23 +124,29 @@ function renderFamilyHeader(family) {
 
 function setupFamilyEditPanel(payload) {
   console.log('setupFamilyEditPanel: start');
+
   const toggle = document.getElementById('editFamilyToggle');
-console.log('setupFamilyEditPanel: panel =', panel);
   const panel = document.getElementById('familyEditPanel');
-  console.log('setupFamilyEditPanel: panel =', panel);
   const cancel = document.getElementById('cancelFamilyEdit');
-  
   const form = document.getElementById('familyEditForm');
-
   const controlSelect = document.getElementById('editControlSelect');
-
   const statusSelect = document.getElementById('editStatusSelect');
-
   const notes = document.getElementById('editImplementationNotes');
 
+  console.log('setupFamilyEditPanel elements:', {
+    toggle,
+    panel,
+    cancel,
+    form,
+    controlSelect,
+    statusSelect,
+    notes
+  });
 
-  if (!toggle || !panel || !cancel || !form || !controlSelect) return;
-     console.log('setupFamilyEditPanel: toggle, panel, cancel, form, or controlselect not found');
+  if (!toggle || !panel || !cancel || !form || !controlSelect) {
+    console.log('setupFamilyEditPanel: one or more required elements not found');
+    return;
+  }
 
   controlSelect.innerHTML = `
     <option value="">Choose a control</option>
@@ -151,18 +157,22 @@ console.log('setupFamilyEditPanel: panel =', panel);
     `).join('')}
   `;
 
-  toggle.addEventListener('click', () => {
-  console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+  toggle.addEventListener('click', (event) => {
+    console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+
     const open = !panel.hasAttribute('hidden');
+
     if (open) {
       panel.setAttribute('hidden', '');
       toggle.setAttribute('aria-expanded', 'false');
     } else {
       panel.removeAttribute('hidden');
       toggle.setAttribute('aria-expanded', 'true');
-      console.log('setupFamilyEditPanel: listener attached');
     }
   });
+
+  console.log('setupFamilyEditPanel: listener attached');
+}
 
   cancel.addEventListener('click', () => {
     form.reset();
@@ -190,7 +200,6 @@ console.log('setupFamilyEditPanel: panel =', panel);
       implementationNotes: formData.get('implementationNotes')
     });
   });
-}
 
 
 
