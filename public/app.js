@@ -123,10 +123,11 @@ function renderFamilyHeader(family) {
 
 
 function setupFamilyEditPanel(payload) {
+const panel = document.getElementById('familyEditPanel');
   console.log('setupFamilyEditPanel: start');
 
   const toggle = document.getElementById('editFamilyToggle');
-  const panel = document.getElementById('familyEditPanel');
+  
   const cancel = document.getElementById('cancelFamilyEdit');
   const form = document.getElementById('familyEditForm');
   const controlSelect = document.getElementById('editControlSelect');
