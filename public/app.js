@@ -163,6 +163,7 @@ function setupFamilyEditPanel(payload) {
 
   toggle.addEventListener('click', (event) => {
     console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+    console.log('before click, hidden?', panel.hasAttribute('hidden'), panel);
 
     const open = !panel.hasAttribute('hidden');
 
@@ -173,6 +174,11 @@ function setupFamilyEditPanel(payload) {
       panel.removeAttribute('hidden');
       toggle.setAttribute('aria-expanded', 'true');
     }
+    console.log('after click, hidden?', panel.hasAttribute('hidden'));
+    console.log('computed display:', getComputedStyle(panel).display);
+    console.log('computed visibility:', getComputedStyle(panel).visibility);
+    console.log('computed opacity:', getComputedStyle(panel).opacity);
+
   });
 
   console.log('setupFamilyEditPanel: listener attached');
