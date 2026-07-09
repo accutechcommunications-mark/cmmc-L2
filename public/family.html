@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=21" />
-  <script defer src="./app.js?v4"></script>
+  <link rel="stylesheet" href="styles.css?v=22" />
+  <script defer src="./app.js?v5"></script>
 
 </head>
 <body>
@@ -128,22 +128,22 @@
             <strong data-kpi-controls>—</strong>
             <span>Total controls in family</span>
           </article>
-          <article class="kpi">
+          <article class="kpi kpi-status">
             <label>Implemented</label>
             <strong data-kpi-implemented>—</strong>
             <span>Controls marked implemented</span>
           </article>
-          <article class="kpi">
+          <article class="kpi kpi-boolean" data-kpi-guides-card data-presence="no">
             <label>Guide coverage</label>
             <strong data-kpi-guides>—</strong>
             <span>Published how-to guides</span>
           </article>
-          <article class="kpi">
+          <article class="kpi kpi-boolean" data-kpi-evidence-card data-presence="no">
             <label>Evidence items</label>
             <strong data-kpi-artifacts>—</strong>
             <span>Uploaded supporting artifacts</span>
           </article>
-          <article class="kpi" id="familyStatusCard" data-status="red">
+          <article class="kpi kpi-status" id="familyStatusCard" data-status="red">
             <span class="metric-label">Family status</span>
             <strong id="familyStatusLabel">Needs attention</strong>
             <span class="metric-note">Based on completion percentage</span>
