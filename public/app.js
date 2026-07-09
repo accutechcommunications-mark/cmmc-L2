@@ -191,11 +191,18 @@ toggle.addEventListener('click', (event) => {
   console.log('setupFamilyEditPanel: listener attached');
 }
 
+/*
   cancel.addEventListener('click', () => {
     form.reset();
     panel.setAttribute('hidden', '');
     toggle.setAttribute('aria-expanded', 'false');
   });
+*/
+cancel.addEventListener('click', () => {
+  panel.setAttribute('hidden', '');
+  toggle.setAttribute('aria-expanded', 'false');
+});
+
 
   controlSelect.addEventListener('change', () => {
     const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
