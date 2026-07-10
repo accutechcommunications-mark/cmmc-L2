@@ -1,10 +1,6 @@
 export async function onRequestPost(context) {
 
-
- /* return Response.json({ ok: true });*/
-
-
-  const { request, env } = context;
+   const { request, env } = context;
 
   try {
     const body = await request.json();
