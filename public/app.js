@@ -260,12 +260,17 @@ console.log('sample control object:', payload.controls[0]);
         status,
         implementationNotes
       })
+    
     });
-     
-if (!response.ok) {
-      throw new Error(`Save failed: ${response.status}`);
-    }
 
+      const raw = await response.text();
+      console.log('save status:', response.status);
+      console.log('save response body:', raw);
+
+  if (!response.ok) {
+    throw new Error(`Save failed: ${response.status} ${raw}`);
+  }
+  
     panel.setAttribute('hidden', '');
     toggle.setAttribute('aria-expanded', 'false');
 
