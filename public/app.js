@@ -227,7 +227,7 @@ function setupFamilyEditPanel(payload) {
     notes.value = selected.implementation_notes || '';
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
      event.preventDefault();
      const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
      const controlId = controlSelect.value;
