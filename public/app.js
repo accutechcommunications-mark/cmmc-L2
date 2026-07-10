@@ -31,8 +31,6 @@ function renderDashboard() {
       const families = Array.isArray(payload.families) ? payload.families : [];
       grid.innerHTML = '';
 
-console.log(families[0]);
-
       families.forEach(family => {
         const card = document.createElement('button');
         card.type = 'button';
@@ -65,8 +63,6 @@ console.log(families[0]);
     });
 }
 
-
-
 function applyMetricStatus(cardEl, percent) {
   if (!cardEl) return;
   cardEl.dataset.status = getMetricStatus(percent);
@@ -79,7 +75,6 @@ function highlightNav() {
     if (href.includes(current)) link.classList.add('active');
   });
 }
-
 async function fetchJSON(path) {
   const res = await fetch(path, { headers: { Accept: 'application/json' } });
   if (!res.ok) throw new Error(`Failed to load ${path}`);
@@ -137,7 +132,8 @@ function setupFamilySwitcher(families, activeCode) {
     url.searchParams.set('family', nextCode);
     window.location.href = url.toString();
   });
-  
+}
+
 function setupFamilyEditPanel(payload) {
   const toggle = document.getElementById('editFamilyToggle');
   const panel = document.getElementById('familyEditPanel');
@@ -159,23 +155,7 @@ function setupFamilyEditPanel(payload) {
       </option>
     `).join('')}
   `;
-function setupFamilySwitcher(families, activeCode) {
-  const select = document.getElementById('familySwitcher');
-  if (!select) return;
 
-  select.innerHTML = families.map(family => `
-    <option value="${escapeAttribute(family.code)}" ${family.code === activeCode ? 'selected' : ''}>
-      ${escapeHtml(family.code)} — ${escapeHtml(family.name)}
-    </option>
-  `).join('');
-
-  select.addEventListener('change', (event) => {
-    const nextCode = event.target.value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('family', nextCode);
-    window.location.href = url.toString();
-  });
-}
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
 
@@ -228,7 +208,6 @@ function setupFamilySwitcher(families, activeCode) {
 
 }
 
-
 function renderFamilyKpis(payload) {
   const controls = Array.isArray(payload.controls) ? payload.controls : [];
   const implemented = controls.filter(control => normalizeStatus(control.status) === 'implemented').length;
@@ -255,13 +234,6 @@ function renderFamilyKpis(payload) {
     familyStatusLabel.textContent = `${completion}% complete`;
   }
 }
-
-
-
-
-
-
-
 
 function renderControls(controls) {
   const container = document.querySelector('[data-controls-container]');
