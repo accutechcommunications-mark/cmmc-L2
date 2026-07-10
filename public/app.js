@@ -121,6 +121,23 @@ function renderFamilyHeader(family) {
   document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
 }
 
+function setupFamilySwitcher(families, activeCode) {
+  const select = document.getElementById('familySwitcher');
+  if (!select) return;
+
+  select.innerHTML = families.map(family => `
+    <option value="${escapeAttribute(family.code)}" ${family.code === activeCode ? 'selected' : ''}>
+      ${escapeHtml(family.code)} — ${escapeHtml(family.name)}
+    </option>
+  `).join('');
+
+  select.addEventListener('change', (event) => {
+    const nextCode = event.target.value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('family', nextCode);
+    window.location.href = url.toString();
+  });
+  
 function setupFamilyEditPanel(payload) {
   const toggle = document.getElementById('editFamilyToggle');
   const panel = document.getElementById('familyEditPanel');
