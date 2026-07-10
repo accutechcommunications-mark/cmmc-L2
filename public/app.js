@@ -184,6 +184,19 @@ function setupFamilyEditPanel(payload) {
 
   });
 */
+const cancel = document.getElementById('cancelFamilyEdit');
+cancel.addEventListener('click', (event) => {
+  event.preventDefault();
+  panel.setAttribute('hidden', '');
+  toggle.setAttribute('aria-expanded', 'false');
+  });
+  controlSelect.addEventListener('change', () => {
+    const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
+    if (!selected) return;
+
+    statusSelect.value = normalizeStatus(selected.status || 'not_started');
+    notes.value = selected.implementation_notes || '';
+  });
 
 toggle.addEventListener('click', (event) => {
   console.log('setupFamilyEditPanel: click fired', event.currentTarget);
@@ -194,47 +207,7 @@ toggle.addEventListener('click', (event) => {
   console.log('setupFamilyEditPanel: listener attached');
 }
 
-/*
-  cancel.addEventListener('click', () => {
-    form.reset();
-    panel.setAttribute('hidden', '');
-    toggle.setAttribute('aria-expanded', 'false');
-  });
 
-cancel.addEventListener('click', () => {
-  panel.setAttribute('hidden', '');
-  toggle.setAttribute('aria-expanded', 'false');
-});
-*/
-
-/*cancel.addEventListener('click', (event) => {
-cancelFamilyEdit.addEventListener('click', () => {
-  event.preventDefault();
-  const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
-  window.location.href = `family.html?family=${encodeURIComponent(familyCode)}`;
-});
-*/
-const cancel = document.getElementById('cancelFamilyEdit');
-cancel.addEventListener('click', (event) => {
-  event.preventDefault();
-  panel.setAttribute('hidden', '');
-  toggle.setAttribute('aria-expanded', 'false');
-});
-
-
-
-  controlSelect.addEventListener('change', () => {
-    const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
-    if (!selected) return;
-
-    statusSelect.value = normalizeStatus(selected.status || 'not_started');
-    notes.value = selected.implementation_notes || '';
-  });
-/*
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const formData = new FormData(form);
-*/
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
