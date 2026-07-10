@@ -121,16 +121,9 @@ function renderFamilyHeader(family) {
   document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
 }
 
-
 function setupFamilyEditPanel(payload) {
-  console.log('setupFamilyEditPanel: start');
-
   const toggle = document.getElementById('editFamilyToggle');
-  console.log('setupFamilyEditPanel: toggle =', toggle);
-
   const panel = document.getElementById('familyEditPanel');
-  console.log('setupFamilyEditPanel: panel =', panel);
-
   const cancel = document.getElementById('cancelFamilyEdit');
   const form = document.getElementById('familyEditForm');
   const controlSelect = document.getElementById('editControlSelect');
@@ -138,7 +131,6 @@ function setupFamilyEditPanel(payload) {
   const notes = document.getElementById('editImplementationNotes');
 
   if (!toggle || !panel || !cancel || !form || !controlSelect) {
-    console.log('setupFamilyEditPanel: one or more required elements not found');
     return;
   }
 
@@ -154,10 +146,10 @@ function setupFamilyEditPanel(payload) {
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
 
-cancel.addEventListener('click', (event) => {
-  event.preventDefault();
-  panel.setAttribute('hidden', '');
-  toggle.setAttribute('aria-expanded', 'false');
+  cancel.addEventListener('click', (event) => {
+     event.preventDefault();
+     panel.setAttribute('hidden', '');
+     toggle.setAttribute('aria-expanded', 'false');
   });
 
   controlSelect.addEventListener('change', () => {
@@ -169,62 +161,40 @@ cancel.addEventListener('click', (event) => {
   });
 
   form.addEventListener('submit', (event) => {
-  event.preventDefault();
+     event.preventDefault();
+     const controlId = controlSelect.value;
+     const newStatus = statusSelect.value;
+     const newNotes = notes.value;
 
-  const controlId = controlSelect.value;
-  const newStatus = statusSelect.value;
-  const newNotes = notes.value;
+    if (!controlId) return;
+    // 1. Update in-memory controls
+      const control = familyPageState.controls.find(c => String(c.id) === controlId);
+    if (!control) return;
+      control.status = newStatus;
+      control.implementationNotes = newNotes;
 
-  if (!controlId) return;
-
-  // 1. Update in-memory controls
-  const control = familyPageState.controls.find(c => String(c.id) === controlId);
-  if (!control) return;
-
-  control.status = newStatus;
-  control.implementationNotes = newNotes;
-
-  // 2. Re-render KPIs and controls so the dashboard reflects the change
-  renderFamilyKpis({
-    family: familyPageState.family,
-    controls: familyPageState.controls
+     // 2. Re-render KPIs and controls so the dashboard reflects the change
+     renderFamilyKpis({
+     family: familyPageState.family,
+     controls: familyPageState.controls
   });
 
   renderControls(familyPageState.controls);
-
   // 3. Optionally persist to API / JSON
   // await saveFamilyUpdate(familyPageState.family.code, familyPageState.controls);
 
   // 4. Hide the panel again
   panel.setAttribute('hidden', '');
-  toggle.setAttribute('aria-expanded', 'false');
-});  
+     toggle.setAttribute('aria-expanded', 'false');
+  });  
 
-toggle.addEventListener('click', (event) => {
-  console.log('setupFamilyEditPanel: click fired', event.currentTarget);
-  panel.removeAttribute('hidden');
-  toggle.setAttribute('aria-expanded', 'true');
-});
+  toggle.addEventListener('click', (event) => {
+     console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+     panel.removeAttribute('hidden');
+     toggle.setAttribute('aria-expanded', 'true');
+   });
 
-  console.log('setupFamilyEditPanel: listener attached');
 }
-
-
-
-
-
-
-
-console.log({
-      controlId: formData.get('controlId'),
-      status: formData.get('status'),
-      guideFile: formData.get('guideFile'),
-      evidenceCount: document.getElementById('editEvidenceFile')?.files.length || 0,
-      implementationNotes: formData.get('implementationNotes')
-    });
-  
-
-
 
 
 function renderFamilyKpis(payload) {
