@@ -163,33 +163,13 @@ function setupFamilyEditPanel(payload) {
 
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
-/*
-  toggle.addEventListener('click', (event) => {
-    console.log('setupFamilyEditPanel: click fired', event.currentTarget);
-    console.log('before click, hidden?', panel.hasAttribute('hidden'), panel);
 
-    const open = !panel.hasAttribute('hidden');
-
-    if (open) {
-      panel.setAttribute('hidden', '');
-      toggle.setAttribute('aria-expanded', 'false');
-    } else {
-      panel.removeAttribute('hidden');
-      toggle.setAttribute('aria-expanded', 'true');
-    }
-    console.log('after click, hidden?', panel.hasAttribute('hidden'));
-    console.log('computed display:', getComputedStyle(panel).display);
-    console.log('computed visibility:', getComputedStyle(panel).visibility);
-    console.log('computed opacity:', getComputedStyle(panel).opacity);
-
-  });
-*/
-const cancel = document.getElementById('cancelFamilyEdit');
 cancel.addEventListener('click', (event) => {
   event.preventDefault();
   panel.setAttribute('hidden', '');
   toggle.setAttribute('aria-expanded', 'false');
   });
+
   controlSelect.addEventListener('change', () => {
     const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
     if (!selected) return;
