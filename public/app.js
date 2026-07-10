@@ -214,6 +214,7 @@ cancelFamilyEdit.addEventListener('click', () => {
   window.location.href = `family.html?family=${encodeURIComponent(familyCode)}`;
 });
 */
+const cancel = document.getElementById('cancelFamilyEdit');
 cancel.addEventListener('click', (event) => {
   event.preventDefault();
   panel.setAttribute('hidden', '');
