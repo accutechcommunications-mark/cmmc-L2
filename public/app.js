@@ -142,7 +142,23 @@ function setupFamilyEditPanel(payload) {
       </option>
     `).join('')}
   `;
+function setupFamilySwitcher(families, activeCode) {
+  const select = document.getElementById('familySwitcher');
+  if (!select) return;
 
+  select.innerHTML = families.map(family => `
+    <option value="${escapeAttribute(family.code)}" ${family.code === activeCode ? 'selected' : ''}>
+      ${escapeHtml(family.code)} — ${escapeHtml(family.name)}
+    </option>
+  `).join('');
+
+  select.addEventListener('change', (event) => {
+    const nextCode = event.target.value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('family', nextCode);
+    window.location.href = url.toString();
+  });
+}
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
 
@@ -189,7 +205,6 @@ function setupFamilyEditPanel(payload) {
   });  
 
   toggle.addEventListener('click', (event) => {
-     console.log('setupFamilyEditPanel: click fired', event.currentTarget);
      panel.removeAttribute('hidden');
      toggle.setAttribute('aria-expanded', 'true');
    });
@@ -200,10 +215,8 @@ function setupFamilyEditPanel(payload) {
 function renderFamilyKpis(payload) {
   const controls = Array.isArray(payload.controls) ? payload.controls : [];
   const implemented = controls.filter(control => normalizeStatus(control.status) === 'implemented').length;
-
   const hasGuide = controls.some(control => control.guide);
   const hasEvidence = controls.some(control => Array.isArray(control.artifacts) && control.artifacts.length > 0);
-
   const completion = Number(payload.family?.completion_percent) || 0;
   const familyStatus = getStatusFromPercent(completion);
 
@@ -211,7 +224,6 @@ function renderFamilyKpis(payload) {
   document.querySelector('[data-kpi-implemented]').textContent = String(implemented);
   document.querySelector('[data-kpi-guides]').textContent = hasGuide ? 'Yes' : 'No';
   document.querySelector('[data-kpi-artifacts]').textContent = hasEvidence ? 'Yes' : 'No';
-
   document.querySelector('[data-kpi-guides-card]')?.setAttribute('data-presence', hasGuide ? 'yes' : 'no');
   document.querySelector('[data-kpi-evidence-card]')?.setAttribute('data-presence', hasEvidence ? 'yes' : 'no');
 
