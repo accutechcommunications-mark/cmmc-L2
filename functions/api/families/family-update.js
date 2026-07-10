@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
           last_reviewed_at = ?
       WHERE control_id = ?
     `)
-      .bind(status || 'not_started', implementationNotes || '', now, familyCode, controlId)
+      .bind(status || 'not_started', implementationNotes || '', now, controlId)
       .run();
 
     await env.DB.prepare(`
