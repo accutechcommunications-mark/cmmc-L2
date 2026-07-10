@@ -184,7 +184,7 @@ function setupFamilySwitcher(families, activeCode) {
     const nextCode = event.target.value;
     const url = new URL(window.location.href);
     url.searchParams.set('family', nextCode);
-    window.location.href = url.toString();
+    window.location.assign(url.toString());
   });
 }
 
@@ -229,10 +229,44 @@ function setupFamilyEditPanel(payload) {
 
   form.addEventListener('submit', (event) => {
      event.preventDefault();
+     const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
      const controlId = controlSelect.value;
      const newStatus = statusSelect.value;
      const newNotes = notes.value;
+     const status = statusSelect.value;
+     const implementationNotes = notes.value.trim();
+     const saveButton = form.querySelector('[type="submit"]');
 
+  if (saveButton) saveButton.disabled = true;
+
+  try {
+    const response = await fetch('/api/families/update-test', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        familyCode,
+        controlId,
+        status,
+        implementationNotes
+      })
+    });
+     
+if (!response.ok) {
+      throw new Error(`Save failed: ${response.status}`);
+    }
+
+    panel.setAttribute('hidden', '');
+    toggle.setAttribute('aria-expanded', 'false');
+
+    await renderFamilyPage();
+  } catch (error) {
+    console.error('Failed to save family edit', error);
+  } finally {
+    if (saveButton) saveButton.disabled = false;
+  }
     if (!controlId) return;
     // 1. Update in-memory controls
       const control = familyPageState.controls.find(c => String(c.id) === controlId);
