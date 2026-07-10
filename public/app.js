@@ -240,7 +240,7 @@ function setupFamilyEditPanel(payload) {
   if (saveButton) saveButton.disabled = true;
 
   try {
-    const response = await fetch('/api/families/update.js', {
+    const response = await fetch('/api/families/family-update', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
