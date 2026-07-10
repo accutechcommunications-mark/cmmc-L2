@@ -25,8 +25,7 @@ export async function onRequestPost(context) {
       SET status = ?,
           implementation_notes = ?,
           last_reviewed_at = ?
-      WHERE control_family_code = ?
-        AND control_id = ?
+      WHERE control_id = ?
     `)
       .bind(status || 'not_started', implementationNotes || '', now, familyCode, controlId)
       .run();
