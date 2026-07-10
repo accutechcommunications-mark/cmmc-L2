@@ -277,6 +277,9 @@ if (!response.ok) {
     if (!controlId) return;
     // 1. Update in-memory controls
       const control = familyPageState.controls.find(c => String(c.id) === controlId);
+      console.log('controlId from form =', controlId);
+      console.log('matched control =', control);
+      console.log('all control ids =', familyPageState.controls.map(c => c.id));
     if (!control) return;
       control.status = newStatus;
       control.implementationNotes = newNotes;
