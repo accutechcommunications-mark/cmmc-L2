@@ -207,13 +207,18 @@ cancel.addEventListener('click', () => {
 });
 */
 
-/*cancel.addEventListener('click', (event) => {*/
+/*cancel.addEventListener('click', (event) => {
 cancelFamilyEdit.addEventListener('click', () => {
   event.preventDefault();
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   window.location.href = `family.html?family=${encodeURIComponent(familyCode)}`;
 });
-
+*/
+cancel.addEventListener('click', (event) => {
+  event.preventDefault();
+  panel.setAttribute('hidden', '');
+  toggle.setAttribute('aria-expanded', 'false');
+});
 
 
 
