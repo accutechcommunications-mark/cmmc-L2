@@ -207,7 +207,8 @@ cancel.addEventListener('click', () => {
 });
 */
 
-cancel.addEventListener('click', (event) => {
+/*cancel.addEventListener('click', (event) => {*/
+cancel.addEventListener('click', () => {
   event.preventDefault();
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   window.location.href = `family.html?family=${encodeURIComponent(familyCode)}`;
