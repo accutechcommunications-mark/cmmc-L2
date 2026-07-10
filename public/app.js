@@ -86,13 +86,16 @@ async function renderFamilyPage() {
   const familyCode = params.get('family') || 'AC';
 
   try {
-    const payload = await loadFamilyPayload(familyCode);
+    const [payload, familyList] = await Promise.all([
+      loadFamilyPayload(familyCode),
+      loadFamilyList()
+    ]);
+
     familyPageState.family = payload.family;
     familyPageState.controls = payload.controls || [];
 
     renderFamilyHeader(payload.family);
     setupFamilySwitcher(familyList, familyCode);
-    setupFamilyEditPanel(payload)
     renderFamilyKpis(payload);
     renderControls(payload.controls);
     setupFamilyEditPanel(payload);
@@ -111,14 +114,36 @@ async function loadFamilyPayload(familyCode) {
   }
 }
 
-/*function renderFamilyHeader(family) {
-  const familyCodeEl = document.querySelector('[data-family-code]');
-   if (familyCodeEl) {familyCodeEl.textContent = family.code || 'Family';}
-  document.querySelector('[data-family-code]').textContent = family.code || 'Family';
-  document.querySelector('[data-family-title]').textContent = family.name || 'Control family';
-  document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
+async function loadFamilyList() {
+  const apiPath = '/api/families';
+
+  try {
+    const data = await fetchJSON(apiPath);
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    if (Array.isArray(data.families)) {
+      return data.families;
+    }
+
+    throw new Error('Family list response was not an array.');
+  } catch (apiError) {
+    const fallbackPath = './data/families.json';
+    const fallbackData = await fetchJSON(fallbackPath);
+
+    if (Array.isArray(fallbackData)) {
+      return fallbackData;
+    }
+
+    if (Array.isArray(fallbackData.families)) {
+      return fallbackData.families;
+    }
+
+    throw new Error('Fallback family list response was not an array.');
+  }
 }
-/*  document.querySelector('[data-family-title]').textContent = family.name || 'Control family';*/
 
 function renderFamilyHeader(family) {
   const familyCodeEl = document.querySelector('[data-family-code]');
@@ -141,11 +166,19 @@ function setupFamilySwitcher(families, activeCode) {
   const select = document.getElementById('familySwitcher');
   if (!select) return;
 
-  select.innerHTML = families.map(family => `
-    <option value="${escapeAttribute(family.code)}" ${family.code === activeCode ? 'selected' : ''}>
-      ${escapeHtml(family.code)} — ${escapeHtml(family.name)}
-    </option>
-  `).join('');
+  select.innerHTML = families.map((family) => {
+    const code = family.code || '';
+    const name = family.name || code || 'Unknown family';
+
+    return `
+      <option value="${escapeAttribute(code)}" ${code === activeCode ? 'selected' : ''}>
+        ${escapeHtml(code)} — ${escapeHtml(name)}
+      </option>
+    `;
+  }).join('');
+
+  if (select.dataset.bound === 'true') return;
+  select.dataset.bound = 'true';
 
   select.addEventListener('change', (event) => {
     const nextCode = event.target.value;
