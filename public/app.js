@@ -206,7 +206,7 @@ console.log('sample control object:', payload.controls[0]);
     <option value="">Choose a control</option>
     ${payload.controls.map(control => `
       <option value="${escapeAttribute(control.id)}">
-        ${escapeHtml(control.id)} — ${escapeHtml(control.title || 'Untitled control')}
+        ${escapeHtml(control.control_id)} — ${escapeHtml(control.title || 'Untitled control')}
       </option>
     `).join('')}
   `;
@@ -277,7 +277,7 @@ if (!response.ok) {
   }
     if (!controlId) return;
     // 1. Update in-memory controls
-      const control = familyPageState.controls.find(c => String(c.id) === controlId);
+      const control = familyPageState.controls.find(c => String(c.control_id) === controlId);
       console.log('controlId from form =', controlId);
       console.log('matched control =', control);
       console.log('all control ids =', familyPageState.controls.map(c => c.id));
