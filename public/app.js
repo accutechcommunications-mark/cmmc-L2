@@ -200,6 +200,7 @@ function setupFamilyEditPanel(payload) {
   if (!toggle || !panel || !cancel || !form || !controlSelect) {
     return;
   }
+console.log('sample control object:', payload.controls[0]);
 
   controlSelect.innerHTML = `
     <option value="">Choose a control</option>
