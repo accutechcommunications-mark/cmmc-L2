@@ -178,17 +178,7 @@ cancel.addEventListener('click', (event) => {
     notes.value = selected.implementation_notes || '';
   });
 
-toggle.addEventListener('click', (event) => {
-  console.log('setupFamilyEditPanel: click fired', event.currentTarget);
-  panel.removeAttribute('hidden');
-  toggle.setAttribute('aria-expanded', 'true');
-});
-
-  console.log('setupFamilyEditPanel: listener attached');
-}
-
-
-form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const controlId = controlSelect.value;
@@ -219,6 +209,18 @@ form.addEventListener('submit', (event) => {
   panel.setAttribute('hidden', '');
   toggle.setAttribute('aria-expanded', 'false');
 });  
+
+toggle.addEventListener('click', (event) => {
+  console.log('setupFamilyEditPanel: click fired', event.currentTarget);
+  panel.removeAttribute('hidden');
+  toggle.setAttribute('aria-expanded', 'true');
+});
+
+  console.log('setupFamilyEditPanel: listener attached');
+}
+
+
+
 
 
 
