@@ -20,10 +20,10 @@ export async function onRequestPost(context) {
     const now = new Date().toISOString();
 
     await env.DB.prepare(`
-      UPDATE controls_test
+      UPDATE controls
       SET status = ?,
           implementation_notes = ?,
-          last_reviewed = ?
+          last_reviewed_at = ?
       WHERE control_family_code = ?
         AND control_id = ?
     `)
@@ -31,7 +31,7 @@ export async function onRequestPost(context) {
       .run();
 
     await env.DB.prepare(`
-      UPDATE control_families_test
+      UPDATE control_families
       SET updated_at = ?
       WHERE code = ?
     `)
