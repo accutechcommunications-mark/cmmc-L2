@@ -237,6 +237,13 @@ function setupFamilyEditPanel(payload) {
      const implementationNotes = notes.value.trim();
      const saveButton = form.querySelector('[type="submit"]');
 
+
+     console.log('Submitting control:', {
+  selectedValue: controlSelect.value,
+  selectedIndex: controlSelect.selectedIndex,
+  selectedText: controlSelect.options[controlSelect.selectedIndex]?.text
+});
+
   if (saveButton) saveButton.disabled = true;
 
   try {
