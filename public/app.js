@@ -91,6 +91,7 @@ async function renderFamilyPage() {
     familyPageState.controls = payload.controls || [];
 
     renderFamilyHeader(payload.family);
+    setupFamilySwitcher(familyList, familyCode);
     setupFamilyEditPanel(payload)
     renderFamilyKpis(payload);
     renderControls(payload.controls);
@@ -110,10 +111,30 @@ async function loadFamilyPayload(familyCode) {
   }
 }
 
-function renderFamilyHeader(family) {
+/*function renderFamilyHeader(family) {
+  const familyCodeEl = document.querySelector('[data-family-code]');
+   if (familyCodeEl) {familyCodeEl.textContent = family.code || 'Family';}
   document.querySelector('[data-family-code]').textContent = family.code || 'Family';
   document.querySelector('[data-family-title]').textContent = family.name || 'Control family';
   document.querySelector('[data-family-summary]').textContent = family.summary || 'Detailed control status, guidance, and evidence.';
+}
+/*  document.querySelector('[data-family-title]').textContent = family.name || 'Control family';*/
+
+function renderFamilyHeader(family) {
+  const familyCodeEl = document.querySelector('[data-family-code]');
+  const familyTitleEl = document.querySelector('[data-family-title]');
+  const familySummaryEl = document.querySelector('[data-family-summary]');
+
+  if (familyCodeEl) {
+    familyCodeEl.textContent = family.code || 'Family';
+  }
+  if (familyTitleEl) {
+    familyTitleEl.textContent = family.name || 'Control family';
+  }
+  if (familySummaryEl) {
+    familySummaryEl.textContent =
+      family.summary || 'Detailed control status, guidance, and evidence.';
+  }
 }
 
 function setupFamilySwitcher(families, activeCode) {
