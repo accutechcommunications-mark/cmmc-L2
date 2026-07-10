@@ -137,16 +137,6 @@ function setupFamilyEditPanel(payload) {
   const statusSelect = document.getElementById('editStatusSelect');
   const notes = document.getElementById('editImplementationNotes');
 
-  console.log('setupFamilyEditPanel elements:', {
-    toggle,
-    panel,
-    cancel,
-    form,
-    controlSelect,
-    statusSelect,
-    notes
-  });
-
   if (!toggle || !panel || !cancel || !form || !controlSelect) {
     console.log('setupFamilyEditPanel: one or more required elements not found');
     return;
