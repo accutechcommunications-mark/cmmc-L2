@@ -188,6 +188,8 @@ function setupFamilySwitcher(families, activeCode) {
   });
 }
 
+
+
 function setupFamilyEditPanel(payload) {
   const toggle = document.getElementById('editFamilyToggle');
   const panel = document.getElementById('familyEditPanel');
@@ -210,6 +212,42 @@ console.log('sample control object:', payload.controls[0]);
       </option>
     `).join('')}
   `;
+  function clearFamilyEditPanel() {
+  form.reset();
+  controlSelect.value = '';
+  statusSelect.value = '';
+  notes.value = '';
+}
+controlSelect.addEventListener('change', () => {
+  const controlId = controlSelect.value;
+console.log('selected control for edit:', control);
+  if (!controlId) {
+    statusSelect.value = '';
+    notes.value = '';
+    return;
+  }
+  const control = payload.controls.find(
+    c => String(c.control_id) === String(controlId)
+  );
+  if (!control) {
+    statusSelect.value = '';
+    notes.value = '';
+    return;
+  }
+
+  statusSelect.value = normalizeStatus(control.status || '');
+  notes.value = control.implementation_notes || '';
+});
+
+toggle.addEventListener('click', () => {
+  clearEditForm();
+  panel.hidden = false;
+});
+
+cancel.addEventListener('click', () => {
+  clearEditForm();
+  panel.hidden = true;
+});
 
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
@@ -304,11 +342,6 @@ console.log('sample control object:', payload.controls[0]);
   panel.setAttribute('hidden', '');
      toggle.setAttribute('aria-expanded', 'false');
   });  
-
-  toggle.addEventListener('click', (event) => {
-     panel.removeAttribute('hidden');
-     toggle.setAttribute('aria-expanded', 'true');
-   });
 
 }
 
