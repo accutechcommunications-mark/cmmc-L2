@@ -214,9 +214,15 @@ console.log('sample control object:', payload.controls[0]);
   `;
   function clearFamilyEditPanel() {
   form.reset();
+  controlSelect.selectedIndex = 0;
   controlSelect.value = '';
+
+  statusSelect.selectedIndex = 0;
   statusSelect.value = '';
   notes.value = '';
+
+  const hiddenControlId = document.getElementById('editControlId');
+  if (hiddenControlId) hiddenControlId.value = '';
 }
 controlSelect.addEventListener('change', () => {
   const controlId = controlSelect.value;
