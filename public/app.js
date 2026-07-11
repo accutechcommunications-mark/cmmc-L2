@@ -285,7 +285,7 @@ console.log('sample control object:', payload.controls[0]);
       const control = familyPageState.controls.find(c => String(c.control_id) === controlId);
       console.log('controlId from form =', controlId);
       console.log('matched control =', control);
-      console.log('all control ids =', familyPageState.controls.map(c => c.id));
+      console.log('all control ids =', familyPageState.controls.map(c => c.control_id));
     if (!control) return;
       control.status = newStatus;
       control.implementationNotes = newNotes;
