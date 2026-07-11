@@ -21,7 +21,9 @@ export async function onRequestPost(context) {
     const now = new Date().toISOString();
 
     await env.DB.prepare(`
+    
       UPDATE controls
+        console.log('incoming controlId:', controlId, typeof controlId);
       SET status = ?,
           implementation_notes = ?,
           last_reviewed_at = ?
