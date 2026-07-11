@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDashboard();
   }
 });
-
 let familyPageState = {
   family: null,
   controls: []
@@ -15,7 +14,6 @@ let familyPageState = {
 
 function getStatusFromPercent(percent) {
   const value = Number(percent) || 0;
-
   if (value >= 81) return 'green';
   if (value >= 71) return 'yellow';
   if (value >= 51) return 'orange';
@@ -25,23 +23,18 @@ function getStatusFromPercent(percent) {
 function renderDashboard() {
   const grid = document.getElementById('familyGrid');
   if (!grid) return;
-
   fetchJSON('/api/families')
     .then(payload => {
       const families = Array.isArray(payload.families) ? payload.families : [];
       grid.innerHTML = '';
-
       families.forEach(family => {
         const card = document.createElement('button');
         card.type = 'button';
         card.className = 'control-card';
-
         card.dataset.status = getStatusFromPercent(family.completion_percent);
-
         card.addEventListener('click', () => {
           window.location.href = `/family.html?family=${encodeURIComponent(family.code)}`;
         });
-
         card.innerHTML = `
           <div class="control-id">${family.name}</div>
           <div class="control-title">
@@ -49,10 +42,8 @@ function renderDashboard() {
             <span class="family-card-controls">${family.control_count} controls</span>
           </div>
         `;
-
         grid.appendChild(card);
       });
-
       if (!families.length) {
         grid.innerHTML = '<p>No control families found.</p>';
       }
@@ -75,6 +66,7 @@ function highlightNav() {
     if (href.includes(current)) link.classList.add('active');
   });
 }
+
 async function fetchJSON(path) {
   const res = await fetch(path, { headers: { Accept: 'application/json' } });
   if (!res.ok) throw new Error(`Failed to load ${path}`);
@@ -84,16 +76,13 @@ async function fetchJSON(path) {
 async function renderFamilyPage() {
   const params = new URLSearchParams(window.location.search);
   const familyCode = params.get('family') || 'AC';
-
   try {
     const [payload, familyList] = await Promise.all([
       loadFamilyPayload(familyCode),
       loadFamilyList()
     ]);
-
     familyPageState.family = payload.family;
     familyPageState.controls = payload.controls || [];
-
     renderFamilyHeader(payload.family);
     setupFamilySwitcher(familyList, familyCode);
     renderFamilyKpis(payload);
@@ -116,31 +105,24 @@ async function loadFamilyPayload(familyCode) {
 
 async function loadFamilyList() {
   const apiPath = '/api/families';
-
   try {
     const data = await fetchJSON(apiPath);
-
     if (Array.isArray(data)) {
       return data;
     }
-
     if (Array.isArray(data.families)) {
       return data.families;
     }
-
     throw new Error('Family list response was not an array.');
   } catch (apiError) {
     const fallbackPath = './data/families.json';
     const fallbackData = await fetchJSON(fallbackPath);
-
     if (Array.isArray(fallbackData)) {
       return fallbackData;
     }
-
     if (Array.isArray(fallbackData.families)) {
       return fallbackData.families;
     }
-
     throw new Error('Fallback family list response was not an array.');
   }
 }
@@ -149,7 +131,6 @@ function renderFamilyHeader(family) {
   const familyCodeEl = document.querySelector('[data-family-code]');
   const familyTitleEl = document.querySelector('[data-family-title]');
   const familySummaryEl = document.querySelector('[data-family-summary]');
-
   if (familyCodeEl) {
     familyCodeEl.textContent = family.code || 'Family';
   }
@@ -165,21 +146,17 @@ function renderFamilyHeader(family) {
 function setupFamilySwitcher(families, activeCode) {
   const select = document.getElementById('familySwitcher');
   if (!select) return;
-
   select.innerHTML = families.map((family) => {
     const code = family.code || '';
     const name = family.name || code || 'Unknown family';
-
     return `
       <option value="${escapeAttribute(code)}" ${code === activeCode ? 'selected' : ''}>
         ${escapeHtml(code)} — ${escapeHtml(name)}
       </option>
     `;
   }).join('');
-
   if (select.dataset.bound === 'true') return;
   select.dataset.bound = 'true';
-
   select.addEventListener('change', (event) => {
     const nextCode = event.target.value;
     const url = new URL(window.location.href);
@@ -198,16 +175,14 @@ function setupFamilyEditPanel(payload) {
   const controlSelect = document.getElementById('editControlSelect');
   const statusSelect = document.getElementById('editStatusSelect');
   const notes = document.getElementById('editImplementationNotes');
-
   if (!toggle || !panel || !cancel || !form || !controlSelect) {
     return;
   }
-console.log('sample control object:', payload.controls[0]);
-
+                                                                console.log('sample control object:', payload.controls[0]);
   controlSelect.innerHTML = `
     <option value="">Choose a control</option>
     ${payload.controls.map(control => `
-      <option value="${escapeAttribute(control.id)}">
+      <option value="${escapeAttribute(control_id)}">
         ${escapeHtml(control.control_id)} — ${escapeHtml(control.title || 'Untitled control')}
       </option>
     `).join('')}
@@ -216,32 +191,29 @@ console.log('sample control object:', payload.controls[0]);
   form.reset();
   controlSelect.selectedIndex = 0;
   controlSelect.value = '';
-
   statusSelect.selectedIndex = 0;
   statusSelect.value = '';
   notes.value = '';
-
   const hiddenControlId = document.getElementById('editControlId');
   if (hiddenControlId) hiddenControlId.value = '';
-
-  console.log('after clear', {
-  control: controlSelect.value,
-  status: statusSelect.value,
-  notes: notes.value
-});
-
+                                                              console.log('after clear', {control: controlSelect.value,status: statusSelect.value,notes: notes.value});
 }
+
 controlSelect.addEventListener('change', () => {
   const controlId = controlSelect.value;
-console.log('selected control for edit:', control);
+
   if (!controlId) {
     statusSelect.value = '';
     notes.value = '';
     return;
   }
+
   const control = payload.controls.find(
     c => String(c.control_id) === String(controlId)
   );
+
+  console.log('selected control for edit:', control);
+
   if (!control) {
     statusSelect.value = '';
     notes.value = '';
@@ -251,19 +223,17 @@ console.log('selected control for edit:', control);
   statusSelect.value = normalizeStatus(control.status || '');
   notes.value = control.implementation_notes || '';
 
-  console.log('after clear', {
-  control: controlSelect.value,
-  status: statusSelect.value,
-  notes: notes.value
-});
-
+  console.log('after populate', {
+    control: controlSelect.value,
+    status: statusSelect.value,
+    notes: notes.value
+  });
 });
 
 toggle.addEventListener('click', () => {
   clearFamilyEditPanel();
   panel.hidden = false;
   toggle.setAttribute('aria-expanded', 'true');
-
   controlSelect.value = '';
   statusSelect.value = '';
   notes.value = '';
@@ -277,20 +247,6 @@ cancel.addEventListener('click', () => {
 
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
   const familyPageUrl = `family.html?family=${encodeURIComponent(familyCode)}`;
-
-  cancel.addEventListener('click', (event) => {
-     event.preventDefault();
-     panel.setAttribute('hidden', '');
-     toggle.setAttribute('aria-expanded', 'false');
-  });
-
-  controlSelect.addEventListener('change', () => {
-    const selected = payload.controls.find(control => String(control.id) === controlSelect.value);
-    if (!selected) return;
-
-    statusSelect.value = normalizeStatus(selected.status || 'not_started');
-    notes.value = selected.implementation_notes || '';
-  });
 
   form.addEventListener('submit', async (event) => {
      event.preventDefault();
@@ -378,21 +334,17 @@ function renderFamilyKpis(payload) {
   const hasEvidence = controls.some(control => Array.isArray(control.artifacts) && control.artifacts.length > 0);
   const completion = Number(payload.family?.completion_percent) || 0;
   const familyStatus = getStatusFromPercent(completion);
-
   document.querySelector('[data-kpi-controls]').textContent = String(controls.length);
   document.querySelector('[data-kpi-implemented]').textContent = String(implemented);
   document.querySelector('[data-kpi-guides]').textContent = hasGuide ? 'Yes' : 'No';
   document.querySelector('[data-kpi-artifacts]').textContent = hasEvidence ? 'Yes' : 'No';
   document.querySelector('[data-kpi-guides-card]')?.setAttribute('data-presence', hasGuide ? 'yes' : 'no');
   document.querySelector('[data-kpi-evidence-card]')?.setAttribute('data-presence', hasEvidence ? 'yes' : 'no');
-
   const familyStatusCard = document.getElementById('familyStatusCard');
   const familyStatusLabel = document.getElementById('familyStatusLabel');
-
   if (familyStatusCard) {
     familyStatusCard.dataset.status = familyStatus;
   }
-
   if (familyStatusLabel) {
     familyStatusLabel.textContent = `${completion}% complete`;
   }
@@ -402,7 +354,6 @@ function renderControls(controls) {
   const container = document.querySelector('[data-controls-container]');
   const template = document.getElementById('control-card-template');
   container.innerHTML = '';
-
   if (!controls.length) {
     container.innerHTML = `
       <article class="panel empty-state-panel">
@@ -413,7 +364,6 @@ function renderControls(controls) {
       </article>`;
     return;
   }
-
   controls.forEach(control => {
     const node = template.content.cloneNode(true);
     populateControlCard(node, control);
@@ -428,15 +378,12 @@ function populateControlCard(fragment, control) {
   setText(fragment, '[data-control-owner]', control.owner || 'Unassigned');
   setText(fragment, '[data-control-reviewed]', formatDate(control.lastReviewed));
   setText(fragment, '[data-control-artifact-count]', String((control.artifacts || []).length));
-
   const statusEl = fragment.querySelector('[data-control-status]');
   const statusKey = normalizeStatus(control.status);
   statusEl.textContent = labelizeStatus(control.status || 'not_started');
   statusEl.classList.add(`status-${statusKey}`);
-
   const evidenceEl = fragment.querySelector('[data-control-evidence]');
   evidenceEl.textContent = `${(control.artifacts || []).length} artifact${(control.artifacts || []).length === 1 ? '' : 's'}`;
-
   applyGuide(fragment, control.guide || null);
   renderArtifacts(fragment.querySelector('[data-artifact-list]'), control.artifacts || []);
 }
@@ -448,34 +395,28 @@ function applyGuide(fragment, guide) {
   const content = fragment.querySelector('[data-guide-content]');
   const fileEmpty = fragment.querySelector('[data-guide-file-empty]');
   const fileRow = fragment.querySelector('[data-guide-file]');
-
   if (!guide) {
     guideState.textContent = 'None';
     statusBadge.textContent = 'Not published';
     statusBadge.classList.add('guide-none');
     return;
   }
-
   const guideStatus = guide.status || 'draft';
   const guideClass = `guide-${normalizeStatus(guideStatus)}`;
   guideState.textContent = labelizeStatus(guideStatus);
   statusBadge.textContent = labelizeStatus(guideStatus);
   statusBadge.classList.add(guideClass);
-
   setText(fragment, '[data-guide-title]', guide.title || 'Untitled guide');
   setText(fragment, '[data-guide-summary]', guide.summary || '');
   setText(fragment, '[data-guide-version]', `Version ${guide.version || 1}`);
-
   const body = fragment.querySelector('[data-guide-body]');
   body.innerHTML = renderRichText(guide.howToMarkdown || guide.how_to_markdown || guide.body || '');
-
   empty.hidden = false;
   content.hidden = true;
   if ((guide.howToMarkdown || guide.how_to_markdown || guide.body || '').trim()) {
     empty.hidden = true;
     content.hidden = false;
   }
-
   const pdf = guide.pdf || guide.pdfArtifact || null;
   if (pdf && (pdf.url || pdf.downloadUrl || pdf.storageKey || pdf.fileName)) {
     fileEmpty.hidden = true;
@@ -492,7 +433,6 @@ function renderArtifacts(container, artifacts) {
     container.innerHTML = '<div class="artifact-empty">No supporting artifacts have been uploaded for this control yet.</div>';
     return;
   }
-
   container.innerHTML = artifacts.map(item => {
     const fileUrl = item.downloadUrl || item.url || '#';
     const meta = [item.type || item.artifactRole || 'Artifact', item.updatedAt ? formatDate(item.updatedAt) : '', item.owner || ''].filter(Boolean).join(' · ');
