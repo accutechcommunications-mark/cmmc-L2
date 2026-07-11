@@ -178,7 +178,10 @@ function setupFamilyEditPanel(payload) {
   if (!toggle || !panel || !cancel || !form || !controlSelect) {
     return;
   }
-                                                                console.log('sample control object:', payload.controls[0]);
+  console.log('toggle element:', toggle);
+  console.log('panel element:', panel);
+  console.log('controlSelect element:', controlSelect);
+
   controlSelect.innerHTML = `
     <option value="">Choose a control</option>
     ${payload.controls.map(control => `
@@ -231,6 +234,7 @@ controlSelect.addEventListener('change', () => {
 });
 
 toggle.addEventListener('click', () => {
+  console.log('editFamilyToggle clicked');
   clearFamilyEditPanel();
   panel.hidden = false;
   toggle.setAttribute('aria-expanded', 'true');
