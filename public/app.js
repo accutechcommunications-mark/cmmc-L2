@@ -240,12 +240,12 @@ console.log('selected control for edit:', control);
 });
 
 toggle.addEventListener('click', () => {
-  clearEditForm();
+  clearFamilyEditPanel();
   panel.hidden = false;
 });
 
 cancel.addEventListener('click', () => {
-  clearEditForm();
+  clearFamilyEditPanel();
   panel.hidden = true;
 });
 
