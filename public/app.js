@@ -223,6 +223,13 @@ console.log('sample control object:', payload.controls[0]);
 
   const hiddenControlId = document.getElementById('editControlId');
   if (hiddenControlId) hiddenControlId.value = '';
+
+  console.log('after clear', {
+  control: controlSelect.value,
+  status: statusSelect.value,
+  notes: notes.value
+});
+
 }
 controlSelect.addEventListener('change', () => {
   const controlId = controlSelect.value;
@@ -243,16 +250,29 @@ console.log('selected control for edit:', control);
 
   statusSelect.value = normalizeStatus(control.status || '');
   notes.value = control.implementation_notes || '';
+
+  console.log('after clear', {
+  control: controlSelect.value,
+  status: statusSelect.value,
+  notes: notes.value
+});
+
 });
 
 toggle.addEventListener('click', () => {
   clearFamilyEditPanel();
   panel.hidden = false;
+  toggle.setAttribute('aria-expanded', 'true');
+
+  controlSelect.value = '';
+  statusSelect.value = '';
+  notes.value = '';
 });
 
 cancel.addEventListener('click', () => {
   clearFamilyEditPanel();
   panel.hidden = true;
+  toggle.setAttribute('aria-expanded', 'false');
 });
 
   const familyCode = payload.family?.code || familyPageState.family?.code || 'AC';
