@@ -376,7 +376,7 @@ function renderControls(controls) {
 }
 
 function populateControlCard(fragment, control) {
-  setText(fragment, '[data-control-id]', control.id || 'Control');
+  setText(fragment, '[data-control-id]', control.control_id|| 'Control');
   setText(fragment, '[data-control-title]', control.title || 'Untitled control');
   setText(fragment, '[data-control-description]', control.description || 'No control description available.');
   setText(fragment, '[data-control-owner]', control.owner || 'Unassigned');
