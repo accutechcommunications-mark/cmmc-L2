@@ -185,7 +185,7 @@ function setupFamilyEditPanel(payload) {
   controlSelect.innerHTML = `
     <option value="">Choose a control</option>
     ${payload.controls.map(control => `
-      <option value="${escapeAttribute(control_id)}">
+      <option value="${escapeAttribute(control.control_id)}">
         ${escapeHtml(control.control_id)} — ${escapeHtml(control.title || 'Untitled control')}
       </option>
     `).join('')}
